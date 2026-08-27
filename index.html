@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Two Lists, One Life</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="star-field"></div>
+
+<header>
+  <div class="brand">
+    <div class="eyebrow">Shared bucket list <span id="connection-status" class="connection-status">Connecting…</span></div>
+    <h1><span class="k">Kirti</span> &amp; <span class="a">Amol</span></h1>
+  </div>
+  <nav>
+    <button id="nav-main" class="active">All Wishes</button>
+    <button id="nav-completed">Completed</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- MAIN PAGE -->
+  <div id="page-main">
+    <div class="add-panel">
+      <div class="row">
+        <input type="text" id="new-title" placeholder="What's the wish? e.g. Skydive over the Alps" maxlength="120">
+      </div>
+      <div class="row">
+        <textarea id="new-desc" placeholder="Add a little detail (optional)"></textarea>
+      </div>
+      <div class="row" style="align-items:center;">
+        <div class="who-toggle">
+          <button type="button" id="pick-kirti" class="sel-kirti">KIRTI</button>
+          <button type="button" id="pick-amol">AMOL</button>
+          <button type="button" id="pick-together">US</button>
+        </div>
+        <input type="text" id="new-category" list="category-options" placeholder="Category (e.g. Places to visit)" maxlength="40">
+        <datalist id="category-options"></datalist>
+        <button class="add-btn" id="add-wish">+ Add to list</button>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <label for="main-filter">Category</label>
+      <select id="main-filter"></select>
+    </div>
+
+    <div id="main-grid"></div>
+    <div id="main-empty" class="empty" style="display:none;">
+      <h3>Nothing here yet</h3>
+      <p>Add the first wish above — it'll show up in your own style.</p>
+    </div>
+  </div>
+
+  <!-- COMPLETED PAGE -->
+  <div id="page-completed" style="display:none;">
+    <div class="filter-bar">
+      <label for="completed-filter">Category</label>
+      <select id="completed-filter"></select>
+    </div>
+
+    <div id="completed-grid"></div>
+    <div id="completed-empty" class="empty" style="display:none;">
+      <h3>Nothing completed yet</h3>
+      <p>Finish a wish on the main page and it'll land here.</p>
+    </div>
+
+    <button class="toggle-archived" id="toggle-archived">Show archived</button>
+    <div id="archived-section" style="display:none;">
+      <div class="section-label">Archived</div>
+      <div id="archived-grid"></div>
+    </div>
+  </div>
+
+</main>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
