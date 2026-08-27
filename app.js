@@ -35,6 +35,7 @@ function cryptoId(){
 // Declared before the Firebase listener below, since onValue's callback can fire
 // synchronously (e.g. from local cache) and calls render(), which reads these.
 let selectedOwner = 'kirti';
+let selectedCategory = DEFAULT_CATEGORIES[0];
 let showArchived = false;
 let mainFilter = 'all';
 let completedFilter = 'all';
@@ -81,9 +82,26 @@ function allCategories(){
 function populateCategoryUI(){
   const cats = allCategories();
 
-  // datalist for the add form (free typing + suggestions)
-  const datalist = document.getElementById('category-options');
-  datalist.innerHTML = cats.map(c => `<option value="${escapeHTML(c)}"></option>`).join('');
+  // Chip picker for the add form — reliable on mobile, unlike <datalist>
+  const chipContainer = document.getElementById('category-chips');
+  const customInput = document.getElementById('new-category-custom');
+  if(chipContainer){
+    const isCustomSelected = selectedCategory === '__custom__';
+    chipContainer.innerHTML = cats.map(c => `
+      <button type="button" class="category-chip${selectedCategory === c ? ' selected' : ''}" data-category="${escapeHTML(c)}">${escapeHTML(c)}</button>
+    `).join('') + `
+      <button type="button" class="category-chip new-chip${isCustomSelected ? ' selected' : ''}" data-category="__custom__">+ New</button>
+    `;
+    chipContainer.querySelectorAll('.category-chip').forEach(chip => {
+      chip.onclick = () => {
+        selectedCategory = chip.getAttribute('data-category');
+        const showCustom = selectedCategory === '__custom__';
+        customInput.style.display = showCustom ? '' : 'none';
+        if(showCustom) customInput.focus();
+        populateCategoryUI();
+      };
+    });
+  }
 
   // filter dropdowns
   [['main-filter', mainFilter], ['completed-filter', completedFilter]].forEach(([id, current]) => {
@@ -135,7 +153,7 @@ pickTogether.onclick = () => setOwnerButtons('together');
 document.getElementById('add-wish').onclick = () => {
   const titleEl = document.getElementById('new-title');
   const descEl = document.getElementById('new-desc');
-  const catEl = document.getElementById('new-category');
+  const customCatEl = document.getElementById('new-category-custom');
   const title = titleEl.value.trim();
   if(!title){
     titleEl.focus();
@@ -143,7 +161,20 @@ document.getElementById('add-wish').onclick = () => {
     setTimeout(()=> titleEl.style.borderColor = '', 900);
     return;
   }
-  const category = catEl.value.trim() || UNCATEGORIZED;
+
+  let category;
+  if(selectedCategory === '__custom__'){
+    category = customCatEl.value.trim();
+    if(!category){
+      customCatEl.focus();
+      customCatEl.style.borderColor = '#ff5f6d';
+      setTimeout(()=> customCatEl.style.borderColor = '', 900);
+      return;
+    }
+  } else {
+    category = selectedCategory || UNCATEGORIZED;
+  }
+
   const newWishRef = push(wishesRef);
   set(newWishRef, {
     title,
@@ -156,7 +187,10 @@ document.getElementById('add-wish').onclick = () => {
 
   titleEl.value = '';
   descEl.value = '';
-  catEl.value = '';
+  customCatEl.value = '';
+  selectedCategory = DEFAULT_CATEGORIES[0];
+  customCatEl.style.display = 'none';
+  populateCategoryUI();
 };
 
 function closeExpandedOverlay(){
