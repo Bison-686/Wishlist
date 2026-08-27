@@ -271,9 +271,66 @@ main{
 }
 .add-btn:hover{ opacity: 0.9; }
 
-.add-panel input#new-category{
-  max-width: 220px;
+.category-picker{
+  width: 100%;
 }
+.category-picker-label{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 8px;
+}
+.category-chips{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.category-chip{
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink-dim);
+  cursor: pointer;
+  transition: all .15s ease;
+  white-space: nowrap;
+}
+.category-chip:hover{
+  border-color: var(--ink-dim);
+  color: var(--ink);
+}
+.category-chip.selected{
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+.category-chip.new-chip{
+  background: transparent;
+  border-style: dashed;
+  color: var(--ink-dim);
+}
+.category-chip.new-chip.selected{
+  background: var(--ink);
+  border-style: solid;
+  color: var(--bg);
+}
+#new-category-custom{
+  margin-top: 10px;
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 14px;
+}
+#new-category-custom::placeholder{ color: var(--ink-dim); }
 
 .filter-bar{
   display:flex;
