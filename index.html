@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Bucket List</title>
+<title>Two Lists, One Life</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -32,14 +32,19 @@
       <div class="row">
         <textarea id="new-desc" placeholder="Add a little detail (optional)"></textarea>
       </div>
+      <div class="row">
+        <div class="category-picker">
+          <div class="category-picker-label">Category</div>
+          <div id="category-chips" class="category-chips"></div>
+          <input type="text" id="new-category-custom" placeholder="Type a new category…" maxlength="40" style="display:none;">
+        </div>
+      </div>
       <div class="row" style="align-items:center;">
         <div class="who-toggle">
           <button type="button" id="pick-kirti" class="sel-kirti">KIRTI</button>
           <button type="button" id="pick-amol">AMOL</button>
           <button type="button" id="pick-together">US</button>
         </div>
-        <input type="text" id="new-category" list="category-options" placeholder="Category (e.g. Places to visit)" maxlength="40">
-        <datalist id="category-options"></datalist>
         <button class="add-btn" id="add-wish">+ Add to list</button>
       </div>
     </div>
@@ -81,3 +86,4 @@
 <script type="module" src="app.js"></script>
 </body>
 </html>
+
