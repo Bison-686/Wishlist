@@ -1,86 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Life List</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K + A Wishlist</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="star-field"></div>
-
-<header>
-  <div class="brand">
-    <div class="eyebrow">Our life list <span id="connection-status" class="connection-status">Connecting…</span></div>
-    <h1><span class="k">Kirti</span> &amp; <span class="a">Amol</span></h1>
+  <!-- Starry Background -->
+  <div id="star-field">
+    <div class="shooting-star" style="--y: 15%; --delay: 0s;"></div>
+    <div class="shooting-star" style="--y: 35%; --delay: 4s;"></div>
+    <div class="shooting-star" style="--y: 60%; --delay: 7s;"></div>
+    <div class="shooting-star" style="--y: 80%; --delay: 11s;"></div>
   </div>
-  <nav>
-    <button id="nav-main" class="active glowing-tab">✨ All Wishes</button>
-    <button id="nav-completed">🎯 Completed</button>
-  </nav>
-</header>
 
-<main>
+  <header>
+    <div class="brand">
+      <span class="eyebrow">Shared Space <span id="sync-status" class="connection-status">Online</span></span>
+      <h1><span class="k">Kirti</span> & <span class="a">Amol</span></h1>
+    </div>
 
-  <!-- MAIN PAGE -->
-  <div id="page-main">
-    <div class="add-panel">
+    <nav>
+      <button class="tab-btn active" data-tab="all">All</button>
+      <button class="tab-btn" data-tab="things to buy">Things to Buy</button>
+      <button class="tab-btn" data-tab="places to visit">Places to Visit</button>
+      <button class="tab-btn" data-tab="things to do">Things to Do</button>
+      <button class="tab-btn" data-tab="movie watchlist">Movie Watchlist</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Add Item Form -->
+    <section class="add-panel">
       <div class="row">
-        <input type="text" id="new-title" placeholder="What's the wish? e.g. Skydive over the Alps" maxlength="120">
-      </div>
-      <div class="row">
-        <textarea id="new-desc" placeholder="Add a little detail (optional)"></textarea>
-      </div>
-      <div class="row">
-        <div class="category-picker">
-          <div class="category-picker-label">Category</div>
-          <div id="category-chips" class="category-chips"></div>
-          <input type="text" id="new-category-custom" placeholder="Type a new category…" maxlength="40" style="display:none;">
-        </div>
-      </div>
-      <div class="row" style="align-items:center;">
+        <input type="text" id="wish-title" placeholder="Add a title..." required />
         <div class="who-toggle">
-          <button type="button" id="pick-kirti" class="sel-kirti">KIRTI</button>
-          <button type="button" id="pick-amol">AMOL</button>
-          <button type="button" id="pick-together">US</button>
+          <button type="button" id="btn-kirti" class="sel-kirti">Kirti</button>
+          <button type="button" id="btn-amol">Amol</button>
+          <button type="button" id="btn-together">Together</button>
         </div>
-        <button class="add-btn" id="add-wish">+ Add to list</button>
       </div>
-    </div>
+      
+      <div class="row">
+        <textarea id="wish-desc" placeholder="Add notes, links, or details..."></textarea>
+      </div>
 
+      <div class="row category-picker">
+        <div class="category-picker-label">Category</div>
+        <div class="category-chips" id="category-chips">
+          <!-- Dynamically populated via app.js -->
+        </div>
+        <input type="text" id="new-category-custom" placeholder="Type custom category..." style="display: none;" />
+      </div>
+
+      <div class="row" style="margin-top: 16px; justify-content: flex-end;">
+        <button type="button" id="add-wish-btn" class="add-btn">Add Card</button>
+      </div>
+    </section>
+
+    <!-- Filters -->
     <div class="filter-bar">
-      <select id="main-filter"></select>
+      <select id="filter-owner">
+        <option value="all">All Owners</option>
+        <option value="kirti">Kirti</option>
+        <option value="amol">Amol</option>
+        <option value="together">Together</option>
+      </select>
     </div>
 
-    <div id="main-grid"></div>
-    <div id="main-empty" class="empty" style="display:none;">
-      <h3>Nothing here yet</h3>
-      <p>Add the first wish above — it'll show up in your own style.</p>
-    </div>
-  </div>
+    <!-- Cards Container -->
+    <section id="cards-container">
+      <!-- Dynamic cards rendered here -->
+    </section>
 
-  <!-- COMPLETED PAGE -->
-  <div id="page-completed" style="display:none;">
-    <div class="filter-bar">
-      <select id="completed-filter"></select>
-    </div>
+    <button id="toggle-archived-btn" class="toggle-archived">Show Completed Cards</button>
+    <section id="archived-container" style="display: none;">
+      <div class="section-label">Completed</div>
+      <div class="grid" id="archived-grid"></div>
+    </section>
+  </main>
 
-    <div id="completed-grid"></div>
-    <div id="completed-empty" class="empty" style="display:none;">
-      <h3>Nothing completed yet</h3>
-      <p>Finish a wish on the main page and it'll land here.</p>
-    </div>
+  <div id="modal-backdrop" class="card-backdrop" style="display: none;"></div>
 
-    <button class="toggle-archived" id="toggle-archived">Show archived</button>
-    <div id="archived-section" style="display:none;">
-      <div class="section-label">Archived</div>
-      <div id="archived-grid"></div>
-    </div>
-  </div>
-
-</main>
-
-<script type="module" src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
