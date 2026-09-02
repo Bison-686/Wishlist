@@ -27,6 +27,29 @@ let wishes = [];
 const DEFAULT_CATEGORIES = ["Places", "Watchlist", "Wishlist", "Activities"];
 const UNCATEGORIZED = "Uncategorized";
 
+// One-time migration: older wishes may still carry the pre-rename category
+// names. This maps each old name to its current equivalent so existing data
+// gets fixed automatically instead of showing duplicate/stale chips forever.
+const CATEGORY_MIGRATION = {
+  "Places to visit": "Places",
+  "Movie watchlist": "Watchlist",
+  "Things to buy": "Wishlist",
+  "Things to do": "Activities"
+};
+let migrationRun = false;
+
+function migrateOldCategories(wishList){
+  if(migrationRun) return;
+  migrationRun = true;
+  wishList.forEach(w => {
+    const newName = CATEGORY_MIGRATION[w.category];
+    if(newName){
+      update(ref(db, `wishes/${w.id}`), { category: newName })
+        .catch(err => console.error('Category migration failed for', w.id, err));
+    }
+  });
+}
+
 function cryptoId(){
   return 'id-' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 }
@@ -60,6 +83,7 @@ onValue(wishesRef, (snapshot) => {
   const data = snapshot.val() || {};
   wishes = Object.keys(data).map(id => ({ id, ...data[id] }));
   setConnectionState('synced');
+  migrateOldCategories(wishes);
   render();
 }, (error) => {
   console.error('Firebase read failed:', error);
