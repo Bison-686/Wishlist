@@ -19,13 +19,38 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getDatabase(firebaseApp);
 const wishesRef = ref(db, 'wishes');
+const photosRef = ref(db, 'photos');
 
 // ---------- STORAGE (local cache, kept in sync with Firebase) ----------
 let wishes = [];
+let photos = [];
 
 // Default categories always offered, plus any custom ones typed in.
-const DEFAULT_CATEGORIES = ["Places to visit", "Movie watchlist", "Things to buy", "Things to do"];
+const DEFAULT_CATEGORIES = ["Places", "Watchlist", "Wishlist", "Activities"];
 const UNCATEGORIZED = "Uncategorized";
+
+// One-time migration: older wishes may still carry the pre-rename category
+// names. This maps each old name to its current equivalent so existing data
+// gets fixed automatically instead of showing duplicate/stale chips forever.
+const CATEGORY_MIGRATION = {
+  "Places to visit": "Places",
+  "Movie watchlist": "Watchlist",
+  "Things to buy": "Wishlist",
+  "Things to do": "Activities"
+};
+let migrationRun = false;
+
+function migrateOldCategories(wishList){
+  if(migrationRun) return;
+  migrationRun = true;
+  wishList.forEach(w => {
+    const newName = CATEGORY_MIGRATION[w.category];
+    if(newName){
+      update(ref(db, `wishes/${w.id}`), { category: newName })
+        .catch(err => console.error('Category migration failed for', w.id, err));
+    }
+  });
+}
 
 function cryptoId(){
   return 'id-' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
@@ -35,6 +60,7 @@ function cryptoId(){
 // Declared before the Firebase listener below, since onValue's callback can fire
 // synchronously (e.g. from local cache) and calls render(), which reads these.
 let selectedOwner = 'kirti';
+let selectedPhotoOwner = 'kirti';
 let selectedCategory = DEFAULT_CATEGORIES[0];
 let showArchived = false;
 let mainFilter = 'all';
@@ -45,16 +71,34 @@ let collapsedCategories = new Set(); // category names currently folded shut
 // Live listener: any change from either person re-renders the whole app.
 const connectionStatusEl = () => document.getElementById('connection-status');
 
+function setConnectionState(state){
+  // state: 'connecting' (yellow), 'synced' (green), 'error' (red)
+  const status = connectionStatusEl();
+  if(!status) return;
+  status.classList.remove('dot-connecting', 'dot-synced', 'dot-error');
+  status.classList.add(`dot-${state}`);
+  const labels = { connecting: 'Connecting…', synced: 'Synced', error: 'Offline / sync error' };
+  status.title = labels[state] || '';
+}
+setConnectionState('connecting');
+
 onValue(wishesRef, (snapshot) => {
   const data = snapshot.val() || {};
   wishes = Object.keys(data).map(id => ({ id, ...data[id] }));
-  const status = connectionStatusEl();
-  if(status){ status.textContent = 'Synced'; status.classList.remove('offline'); }
+  setConnectionState('synced');
+  migrateOldCategories(wishes);
   render();
 }, (error) => {
   console.error('Firebase read failed:', error);
-  const status = connectionStatusEl();
-  if(status){ status.textContent = 'Offline / sync error'; status.classList.add('offline'); }
+  setConnectionState('error');
+});
+
+onValue(photosRef, (snapshot) => {
+  const data = snapshot.val() || {};
+  photos = Object.keys(data).map(id => ({ id, ...data[id] }));
+  render();
+}, (error) => {
+  console.error('Firebase read failed (photos):', error);
 });
 
 // ---------- STARRY BACKGROUND: a few randomized shooting stars ----------
@@ -67,7 +111,7 @@ function spawnShootingStars(){
     star.className = 'shooting-star';
     star.style.setProperty('--y', `${5 + Math.random()*40}%`);
     star.style.setProperty('--delay', `${Math.random()*7}s`);
-    star.style.animationDuration = `${6 + Math.random()*4}s`;
+    star.style.animationDuration = `${20 + Math.random()*10}s`;
     field.appendChild(star);
   }
 }
@@ -116,23 +160,24 @@ function populateCategoryUI(){
 // ---------- NAV ----------
 const navMain = document.getElementById('nav-main');
 const navCompleted = document.getElementById('nav-completed');
+const navScrapbook = document.getElementById('nav-scrapbook');
 const pageMain = document.getElementById('page-main');
 const pageCompleted = document.getElementById('page-completed');
+const pageScrapbook = document.getElementById('page-scrapbook');
 
-navMain.onclick = () => {
-  navMain.classList.add('active');
-  navCompleted.classList.remove('active');
-  pageMain.style.display = '';
-  pageCompleted.style.display = 'none';
+function showPage(name){
+  navMain.classList.toggle('active', name === 'main');
+  navCompleted.classList.toggle('active', name === 'completed');
+  navScrapbook.classList.toggle('active', name === 'scrapbook');
+  pageMain.style.display = name === 'main' ? '' : 'none';
+  pageCompleted.style.display = name === 'completed' ? '' : 'none';
+  pageScrapbook.style.display = name === 'scrapbook' ? '' : 'none';
   render();
-};
-navCompleted.onclick = () => {
-  navCompleted.classList.add('active');
-  navMain.classList.remove('active');
-  pageCompleted.style.display = '';
-  pageMain.style.display = 'none';
-  render();
-};
+}
+
+navMain.onclick = () => showPage('main');
+navCompleted.onclick = () => showPage('completed');
+navScrapbook.onclick = () => showPage('scrapbook');
 
 // ---------- ADD FORM ----------
 const pickKirti = document.getElementById('pick-kirti');
@@ -149,6 +194,58 @@ function setOwnerButtons(owner){
 pickKirti.onclick = () => setOwnerButtons('kirti');
 pickAmol.onclick = () => setOwnerButtons('amol');
 pickTogether.onclick = () => setOwnerButtons('together');
+
+// ---------- SCRAPBOOK ADD FORM ----------
+const photoPickKirti = document.getElementById('photo-pick-kirti');
+const photoPickAmol = document.getElementById('photo-pick-amol');
+const photoPickTogether = document.getElementById('photo-pick-together');
+
+function setPhotoOwnerButtons(owner){
+  selectedPhotoOwner = owner;
+  photoPickKirti.classList.toggle('sel-kirti', owner === 'kirti');
+  photoPickAmol.classList.toggle('sel-amol', owner === 'amol');
+  photoPickTogether.classList.toggle('sel-together', owner === 'together');
+}
+
+photoPickKirti.onclick = () => setPhotoOwnerButtons('kirti');
+photoPickAmol.onclick = () => setPhotoOwnerButtons('amol');
+photoPickTogether.onclick = () => setPhotoOwnerButtons('together');
+
+document.getElementById('add-photo').onclick = () => {
+  const urlEl = document.getElementById('new-photo-url');
+  const captionEl = document.getElementById('new-photo-caption');
+  const dateEl = document.getElementById('new-photo-date');
+
+  const url = urlEl.value.trim();
+  if(!url){
+    urlEl.focus();
+    urlEl.style.borderColor = '#ff5f6d';
+    setTimeout(()=> urlEl.style.borderColor = '', 900);
+    return;
+  }
+
+  const newPhotoRef = push(photosRef);
+  set(newPhotoRef, {
+    url,
+    caption: captionEl.value.trim(),
+    date: dateEl.value.trim(),
+    owner: selectedPhotoOwner,
+    createdAt: Date.now()
+  }).catch(err => alert('Could not save photo — check your connection.\n' + err.message));
+
+  urlEl.value = '';
+  captionEl.value = '';
+  dateEl.value = '';
+};
+
+function deletePhoto(id){
+  const p = photos.find(x=>x.id===id);
+  const label = p && p.caption ? `"${p.caption}"` : 'this photo';
+  if(!confirm(`Delete ${label} from the scrapbook? This can't be undone.`)) return;
+  if(expandedPhotoId === id) closePhotoModal();
+  remove(ref(db, `photos/${id}`))
+    .catch(err => alert('Could not delete photo.\n' + err.message));
+}
 
 document.getElementById('add-wish').onclick = () => {
   const titleEl = document.getElementById('new-title');
@@ -204,6 +301,9 @@ function completeWish(id){
     .catch(err => alert('Could not update wish.\n' + err.message));
 }
 function deleteWish(id){
+  const w = wishes.find(x=>x.id===id);
+  const label = w && w.title ? `"${w.title}"` : 'this wish';
+  if(!confirm(`Delete ${label}? This can't be undone.`)) return;
   if(expandedCardId === id) closeExpandedOverlay();
   remove(ref(db, `wishes/${id}`))
     .catch(err => alert('Could not delete wish.\n' + err.message));
@@ -284,6 +384,90 @@ function closeWishModal(){
   if(modal) modal.remove();
 }
 
+// ---------- SCRAPBOOK PHOTO MODAL ----------
+let expandedPhotoId = null;
+
+function openPhotoModal(id){
+  const p = photos.find(x=>x.id===id);
+  if(!p) return;
+
+  closePhotoModal(); // ensure only one open at a time
+
+  expandedPhotoId = id;
+  const cardEl = document.querySelector(`.polaroid[data-id="${id}"]`);
+  if(cardEl) cardEl.classList.add('blurred');
+
+  const backdrop = document.createElement('div');
+  backdrop.id = 'photo-backdrop';
+  backdrop.className = 'card-backdrop';
+  backdrop.addEventListener('click', closePhotoModal);
+  document.body.appendChild(backdrop);
+
+  const modal = document.createElement('div');
+  modal.id = 'photo-modal';
+  modal.className = `polaroid photo-modal-expanded ${p.owner}`;
+  modal.setAttribute('data-id', p.id);
+  modal.style.setProperty('--rot', '0deg');
+  modal.addEventListener('click', (e) => e.stopPropagation());
+
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'photo-modal-close';
+  closeBtn.title = 'Close';
+  closeBtn.textContent = '×';
+  closeBtn.addEventListener('click', closePhotoModal);
+
+  const photoDiv = document.createElement('div');
+  photoDiv.className = 'polaroid-photo';
+  const img = document.createElement('img');
+  img.src = p.url;
+  img.alt = p.caption || 'memory';
+  img.addEventListener('error', () => photoDiv.classList.add('img-broken'));
+  photoDiv.appendChild(img);
+
+  const captionDiv = document.createElement('div');
+  captionDiv.className = 'polaroid-caption';
+  captionDiv.textContent = p.caption || '';
+
+  const metaDiv = document.createElement('div');
+  metaDiv.className = 'polaroid-meta';
+  const ownerSpan = document.createElement('span');
+  ownerSpan.className = 'polaroid-owner';
+  ownerSpan.textContent = ownerLabel(p.owner);
+  const dateSpan = document.createElement('span');
+  dateSpan.className = 'polaroid-date';
+  dateSpan.textContent = p.date || '';
+  metaDiv.appendChild(ownerSpan);
+  metaDiv.appendChild(dateSpan);
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'polaroid-delete';
+  deleteBtn.title = 'Delete';
+  deleteBtn.textContent = '×';
+  deleteBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    deletePhoto(p.id);
+  });
+
+  modal.appendChild(closeBtn);
+  modal.appendChild(photoDiv);
+  modal.appendChild(captionDiv);
+  modal.appendChild(metaDiv);
+  modal.appendChild(deleteBtn);
+  document.body.appendChild(modal);
+}
+
+function closePhotoModal(){
+  if(expandedPhotoId){
+    const cardEl = document.querySelector(`.polaroid[data-id="${expandedPhotoId}"]`);
+    if(cardEl) cardEl.classList.remove('blurred');
+  }
+  expandedPhotoId = null;
+  const backdrop = document.getElementById('photo-backdrop');
+  if(backdrop) backdrop.remove();
+  const modal = document.getElementById('photo-modal');
+  if(modal) modal.remove();
+}
+
 
 function actionsHTML(w){
   if(w.status === 'active'){
@@ -311,9 +495,9 @@ function actionsHTML(w){
 }
 
 function ownerLabel(owner){
-  if(owner === 'kirti') return "Kirti's wish";
-  if(owner === 'amol') return "Amol's wish";
-  return "Kirti & Amol's wish";
+  if(owner === 'kirti') return "Kirti's";
+  if(owner === 'amol') return "Amol's";
+  return "Kirti & Amol's";
 }
 
 // Full detail view shown inside the modal
@@ -338,9 +522,8 @@ function cardHTML(w){
     <div class="card ${theme}" data-id="${w.id}" onclick="openWishModal('${w.id}')">
       <div class="stamp">${stampText}</div>
       <div class="owner-tag">${ownerLabel(w.owner)}</div>
-      <span class="cat-chip">${escapeHTML(w.category || UNCATEGORIZED)}</span>
       <h3>${escapeHTML(w.title)}</h3>
-      <div class="tap-hint">tap for options</div>
+      <div class="fold-corner"></div>
     </div>
   `;
 }
@@ -397,6 +580,44 @@ function matchesFilter(w, filter){
   return (w.category || UNCATEGORIZED) === filter;
 }
 
+// Deterministic pseudo-random rotation per photo, so the scattered scrapbook
+// look stays stable across re-renders instead of jittering every update.
+function rotationForId(id){
+  let hash = 0;
+  for(let i=0; i<id.length; i++){
+    hash = (hash * 31 + id.charCodeAt(i)) % 1000;
+  }
+  return (hash / 1000) * 10 - 5; // range: -5deg to +5deg
+}
+
+function photoCardHTML(p){
+  const rotation = rotationForId(p.id).toFixed(1);
+  const ownerLabelText = ownerLabel(p.owner);
+  return `
+    <div class="polaroid ${p.owner}" data-id="${p.id}" style="--rot: ${rotation}deg;" onclick="openPhotoModal('${p.id}')">
+      <div class="polaroid-photo">
+        <img src="${escapeHTML(p.url)}" alt="${escapeHTML(p.caption || 'memory')}" loading="lazy"
+             onerror="this.parentElement.classList.add('img-broken')">
+      </div>
+      <div class="polaroid-caption">${escapeHTML(p.caption || '')}</div>
+      <div class="polaroid-meta">
+        <span class="polaroid-owner">${ownerLabelText}</span>
+        <span class="polaroid-date">${escapeHTML(p.date || '')}</span>
+      </div>
+      <button class="polaroid-delete" onclick="event.stopPropagation(); deletePhoto('${p.id}')" title="Delete">×</button>
+    </div>
+  `;
+}
+
+function renderScrapbook(){
+  const sorted = [...photos].sort((a,b) => b.createdAt - a.createdAt);
+  const grid = document.getElementById('scrapbook-grid');
+  const empty = document.getElementById('scrapbook-empty');
+  if(!grid) return;
+  grid.innerHTML = sorted.map(photoCardHTML).join('');
+  empty.style.display = sorted.length ? 'none' : '';
+}
+
 function render(){
   populateCategoryUI();
 
@@ -423,6 +644,8 @@ function render(){
   renderGrouped(document.getElementById('archived-grid'), archived, 'archived');
   document.getElementById('archived-section').style.display = showArchived ? '' : 'none';
   document.getElementById('toggle-archived').textContent = showArchived ? 'Hide archived' : `Show archived (${archived.length})`;
+
+  renderScrapbook();
 }
 
 document.getElementById('toggle-archived').onclick = () => {
@@ -452,3 +675,6 @@ window.revertWish = revertWish;
 window.archiveWish = archiveWish;
 window.unarchiveWish = unarchiveWish;
 window.toggleCategory = toggleCategory;
+window.deletePhoto = deletePhoto;
+window.openPhotoModal = openPhotoModal;
+window.closePhotoModal = closePhotoModal;
