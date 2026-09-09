@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Two Lists, One Life</title>
+
+<!-- Favicon (browser tab) -->
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+
+<!-- Home screen icon (iOS "Add to Home Screen") -->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="K+A List">
+
+<!-- Home screen icon + install behavior (Android / PWA) -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111318">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="star-field"></div>
+
+<header>
+  <div class="brand">
+    <div class="eyebrow">Our Life List <span id="connection-status" class="connection-status" title="Connecting…"></span></div>
+    <h1><span class="k">Kirti</span> &amp; <span class="a">Amol</span></h1>
+  </div>
+  <nav>
+    <button id="nav-main" class="active">✨ All Wishes</button>
+    <button id="nav-completed">🏆 Completed</button>
+    <button id="nav-scrapbook">📷 Scrapbook</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- MAIN PAGE -->
+  <div id="page-main">
+    <div class="add-panel">
+      <div class="row">
+        <input type="text" id="new-title" placeholder="✨ What's the wish? e.g. Skydive over the Alps" maxlength="120">
+      </div>
+      <div class="row">
+        <textarea id="new-desc" placeholder="📝 Add a little detail (optional)"></textarea>
+      </div>
+      <div class="row">
+        <div class="category-picker">
+          <div class="category-picker-label">Category</div>
+          <div id="category-chips" class="category-chips"></div>
+          <input type="text" id="new-category-custom" placeholder="Type a new category…" maxlength="40" style="display:none;">
+        </div>
+      </div>
+      <div class="row" style="align-items:center;">
+        <div class="who-toggle">
+          <button type="button" id="pick-kirti" class="sel-kirti">KIRTI</button>
+          <button type="button" id="pick-amol">AMOL</button>
+          <button type="button" id="pick-together">US</button>
+        </div>
+        <button class="add-btn" id="add-wish">+ Add to list</button>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <select id="main-filter"></select>
+    </div>
+
+    <div id="main-grid"></div>
+    <div id="main-empty" class="empty" style="display:none;">
+      <h3>Nothing here yet</h3>
+      <p>Add the first wish above — it'll show up in your own style.</p>
+    </div>
+  </div>
+
+  <!-- COMPLETED PAGE -->
+  <div id="page-completed" style="display:none;">
+    <div class="filter-bar">
+      <select id="completed-filter"></select>
+    </div>
+
+    <div id="completed-grid"></div>
+    <div id="completed-empty" class="empty" style="display:none;">
+      <h3>Nothing completed yet</h3>
+      <p>Finish a wish on the main page and it'll land here.</p>
+    </div>
+
+    <button class="toggle-archived" id="toggle-archived">Show archived</button>
+    <div id="archived-section" style="display:none;">
+      <div class="section-label">Archived</div>
+      <div id="archived-grid"></div>
+    </div>
+  </div>
+
+  <!-- SCRAPBOOK PAGE -->
+  <div id="page-scrapbook" style="display:none;">
+    <div class="add-panel">
+      <div class="row">
+        <input type="text" id="new-photo-url" placeholder="🔗 Paste a photo link (URL)" maxlength="500">
+      </div>
+      <div class="row">
+        <input type="text" id="new-photo-caption" placeholder="📝 A little caption for this memory" maxlength="200">
+      </div>
+      <div class="row">
+        <input type="text" id="new-photo-date" placeholder="📅 Date, e.g. 12 Aug 2026" maxlength="40">
+      </div>
+      <div class="row" style="align-items:center;">
+        <div class="who-toggle">
+          <button type="button" id="photo-pick-kirti" class="sel-kirti">KIRTI</button>
+          <button type="button" id="photo-pick-amol">AMOL</button>
+          <button type="button" id="photo-pick-together">US</button>
+        </div>
+        <button class="add-btn" id="add-photo">+ Add to scrapbook</button>
+      </div>
+    </div>
+
+    <div id="scrapbook-grid" class="scrapbook-grid"></div>
+    <div id="scrapbook-empty" class="empty" style="display:none;">
+      <h3>No memories pinned yet</h3>
+      <p>Paste a photo link above and it'll show up here, scrapbook-style.</p>
+    </div>
+  </div>
+
+</main>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
