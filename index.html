@@ -1,89 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Bucketlist</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4a101d">
+  <title>For Amol — A Little Forever</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Great+Vibes&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Add this inside the <head> of your index.html -->
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Pinyon+Script&display=swap" rel="stylesheet">
+
 </head>
 <body>
 
-<div id="star-field"></div>
-
-<header>
-  <div class="brand">
-    <div class="eyebrow">Our bucket list <span id="connection-status" class="connection-status">Connecting…</span></div>
-    <h1><span class="k">Kirti</span> &amp; <span class="a">Amol</span></h1>
-  </div>
-  <nav>
-    <button id="nav-main" class="active">All Wishes</button>
-    <button id="nav-completed">Completed</button>
-  </nav>
-</header>
-
-<main>
-
-  <!-- MAIN PAGE -->
-  <div id="page-main">
-    <div class="add-panel">
-      <div class="row">
-        <input type="text" id="new-title" placeholder="What's the wish? e.g. Skydive over the Alps" maxlength="120">
-      </div>
-      <div class="row">
-        <textarea id="new-desc" placeholder="Add a little detail (optional)"></textarea>
-      </div>
-      <div class="row">
-        <div class="category-picker">
-          <div class="category-picker-label">Category</div>
-          <div id="category-chips" class="category-chips"></div>
-          <input type="text" id="new-category-custom" placeholder="Type a new category…" maxlength="40" style="display:none;">
+<!-- Vintage Burgundy Overlay Section -->
+<div id="birthday-overlay" class="burn-overlay">
+    <div class="overlay-frame-border"></div>
+    <div class="overlay-content">
+        <p class="top-tagline">✦ A SPECIAL DAY · A SPECIAL SOUL ✦</p>
+        
+        <h1 class="script-heading">Amol will turn 25 in...</h1>
+        <div id="countdown-timer">00:00:00</div>
+        
+        <!-- Image Carousel with Morph Transition -->
+        <div class="carousel-container">
+            <div class="carousel-slide active" style="background-image: url('amol1.jpg');"></div>
+            <div class="carousel-slide" style="background-image: url('amol2.jpg');"></div>
+            <div class="carousel-slide" style="background-image: url('amol3.jpg');"></div>
+            <div class="carousel-slide" style="background-image: url('amol4.jpg');"></div>
+            <div class="carousel-slide" style="background-image: url('amol5.jpg');"></div>
+            <div class="carousel-slide" style="background-image: url('amol6.jpg');"></div>
+            <div class="carousel-slide" style="background-image: url('amol7.jpg');"></div>
+            <div class="carousel-slide" style="background-image: url('amol8.jpg');"></div>
+            <div class="carousel-slide" style="background-image: url('amol9.jpg');"></div>
         </div>
+
+        <p class="overlay-subtitle">A BIRTHDAY LETTER, WRAPPED IN MEMORIES</p>
+        
+        <!-- Luxury Gold Demo Trigger Button -->
+        <button id="demo-burn-btn" class="demo-btn">OPEN YOUR LETTER ✦</button>
+    </div>
+</div>
+
+
+
+  
+  <div class="paper-grain" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="monogram" href="#home" aria-label="Back to beginning">A<span>✦</span>K</a>
+    <div class="top-note">Letter to amol...</div>
+    <button class="music-toggle" id="musicToggle" aria-label="Toggle music" title="Toggle ambience">♡ <span></span></button>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-ornament ornament-left">❧</div>
+      <div class="hero-inner">
+        <p class="eyebrow"><span>✦</span> A special day · A special soul <span>✦</span></p>
+        <p class="script small-script">For my dearest</p>
+        <h1>Amol<span class="title-period">.</span></h1>
+        <div class="gold-rule"><span>❦</span></div>
+        <p class="hero-subtitle">You became the best person in my life</p><p>Why didn't we meet earlier Amol.</p>
+        <p class="hero-date">A birthday letter, wrapped in memories</p>
+        <a href="#letter" class="seal-button"><span>OPEN YOUR LETTER</span><b>↓</b></a>
       </div>
-      <div class="row" style="align-items:center;">
-        <div class="who-toggle">
-          <button type="button" id="pick-kirti" class="sel-kirti">KIRTI</button>
-          <button type="button" id="pick-amol">AMOL</button>
-          <button type="button" id="pick-together">US</button>
-        </div>
-        <button class="add-btn" id="add-wish">+ Add to list</button>
+      <div class="hero-ornament ornament-right">❧</div>
+    </section>
+
+    <section class="letter section-shell" id="letter">
+      <div class="section-kicker">CHAPTER I <span>✦</span> A NOTE FROM MY HEART</div>
+      <div class="letter-card">
+        <div class="corner corner-tl">❧</div><div class="corner corner-tr">❧</div>
+        <p class="script letter-greeting">My dear Amol,</p>
+        <h2>Today, the world gets to celebrate <em>you.</em></h2>
+        <div class="thin-rule"></div>
+        <p class="letter-copy" contenteditable="true" data-editable="letter">Happy Birthday, Amol. ♡
+
+It was 28 May 2026, when this era of study period started, besides studying we did all the fun, gossips, shared memories, you were with me every day every time, since 28 May we have spent most of the study periods together shared every problem we we facing, we shared every happy moments of our lives together.
+
+Then we started adding things to our bucket list, bucket list is now very long and we will finish it anyhow, it may take time but we will finish it. I learnt a lot from you be it places to visit things to explore.
+
+In most of the meeting I would sleep and you take the screen shots and we have all those memories in our gallery. I tried to create a scrapbook but I failed. We have created a lot of memories and we will keep creating forever. And no matter how much life changes, I hope we always find our way back to the little things that make us *us*.
+
+With all my love,
+Kirti ♡</p>
+        <p class="letter-signature script">Yours, always</p>
+        <div class="corner corner-bl">❧</div><div class="corner corner-br">❧</div>
       </div>
-    </div>
+    </section>
 
-    <div class="filter-bar">
-      <label for="main-filter">Category</label>
-      <select id="main-filter"></select>
-    </div>
+    <section class="memories section-shell" id="memories">
+      <div class="section-kicker">CHAPTER II <span>✦</span> OUR LITTLE TIME CAPSULE</div>
+      <div class="section-heading">
+        <p class="script">Collected moments</p>
+        <h2>A timeline of <em>us.</em></h2>
+        <p>Every photograph keeps a little piece of time.</p>
+      </div>
 
-    <div id="main-grid"></div>
-    <div id="main-empty" class="empty" style="display:none;">
-      <h3>Nothing here yet</h3>
-      <p>Add the first wish above — it'll show up in your own style.</p>
-    </div>
-  </div>
+      <div class="memory-controls">
+        <p>PHOTOGRAPHS · LITTLE STORIES · FOREVER</p>
+      </div>
 
-  <!-- COMPLETED PAGE -->
-  <div id="page-completed" style="display:none;">
-    <div class="filter-bar">
-      <label for="completed-filter">Category</label>
-      <select id="completed-filter"></select>
-    </div>
+      <div class="timeline" id="timeline">
+        <article class="memory-card left">
+          <div class="timeline-dot"></div>
+          <div class="memory-photo placeholder-photo rose" style="background-image: url('memory-01.jpg'");>
+          </div>
+          <div class="memory-content">
+            <p class="memory-date">THE BEGINNING · A DATE TO REMEMBER</p>
+            <h3>And so, it began…</h3>
+            <p class="memory-message" contenteditable="true">This was the first mesaage I received from you Amol! You used my origami birds to decorate something, I dont remember 😅 but this was the first time we talked.♡</p>
+            <span class="memory-number">MEMORY No. 01</span>
+          </div>
+        </article>
+        <article class="memory-card right">
+          <div class="timeline-dot"></div>
+          <div class="memory-photo placeholder-photo wine"><img src="images/memory-02.jpg" alt="Our memory one"></span>
+          </div>
+          <div class="memory-content">
+            <p class="memory-date">THE DAYS WE KEEP</p>
+            <h3>Amol's Address</h3>
+            <p class="memory-message" contenteditable="true">Then I asked your address, this was the second time we connected and I was not aware what was coming next...countless chats and study periods. We have different kind of chat on whatsapp and Instagram which is amazing.</p>
+            <span class="memory-number">MEMORY No. 02</span>
+          </div>
+        </article>
+        <article class="memory-card left">
+          <div class="timeline-dot"></div>
+          <div class="memory-photo placeholder-photo gold">
+            <span class="photo-icon">✦</span><span><img src="images/memory-03.jpg" alt="Our memory one"></span>
+          </div>
+          <div class="memory-content">
+            <p class="memory-date">A STRONG BOND</p>
+            <h3>One for the memory box</h3>
+            <p class="memory-message" contenteditable="true">And here we are when you offered your company for preparation of my exams, which was the inception of our bond which we have created. I never saw it coming that our study periods will be so interesting and lively....</p>
+            <span class="memory-number">MEMORY No. 03</span>
+          </div>
+        </article>
+      </div>
+      <p class="empty-note" id="emptyNote" hidden>Your new memories will appear here.</p>
+    </section>
 
-    <div id="completed-grid"></div>
-    <div id="completed-empty" class="empty" style="display:none;">
-      <h3>Nothing completed yet</h3>
-      <p>Finish a wish on the main page and it'll land here.</p>
-    </div>
+    <section class="wish-section">
+      <div class="wish-frame">
+        <p class="script">A little wish for your new year</p>
+        <div class="star-divider">✦ ───────── ❦ ───────── ✦</div>
+        <h2>May life be as kind to you<br>as your heart is to the people around you.</h2>
+        <h2>May you explore each and every corner of this world.<br>And you grow in your life and become so rich to gift me a Garmin... </h2>
+        <span class="wish-signature script">Happy Birthday, Amol</span>
+      </div>
+    </section>
 
-    <button class="toggle-archived" id="toggle-archived">Show archived</button>
-    <div id="archived-section" style="display:none;">
-      <div class="section-label">Archived</div>
-      <div id="archived-grid"></div>
-    </div>
-  </div>
+    <section class="closing section-shell">
+      <p class="section-kicker">THE LAST PAGE <span>✦</span> BUT NEVER THE END</p>
+      <div class="closing-seal">♡<span>✦</span>♡</div>
+      <h2>To all the chapters<br><em>still waiting for us.</em></h2>
+      <p class="closing-copy">Here's to the memories we've made, the ones we're living, and all the beautiful ones still on their way.</p>
+      <p class="script closing-script">Always your person,</p>
+      <p class="closing-name">KIRTI <span>♡</span></p>
+      <div class="closing-ornament">❦</div>
+    </section>
+  </main>
 
-</main>
+  <footer>
+    <span>MADE WITH LOVE, FOR AMOL</span>
+    <span>✦</span>
+    <span>KEEP THIS LITTLE CORNER FOREVER</span>
+  </footer>
 
-<script type="module" src="app.js"></script>
+  <dialog id="memoryDialog" class="memory-dialog">
+    <form id="memoryForm">
+      <button type="button" class="dialog-close" id="closeDialog" aria-label="Close">×</button>
+      <p class="section-kicker">ADD TO OUR STORY</p>
+      <h2>A memory to keep</h2>
+      <label>Memory title<input name="title" required maxlength="70" placeholder="The day we couldn't stop laughing"></label>
+      <div class="form-row">
+        <label>Date or little label<input name="date" maxlength="60" placeholder="Summer 2025 · One lovely day"></label>
+        <label>Photo<input name="photo" type="file" accept="image/*"></label>
+      </div>
+      <label>Write the story<textarea name="message" rows="4" required maxlength="700" placeholder="What do you want to remember about this moment?"></textarea></label>
+      <p class="form-hint">Photos are saved in this browser on this device. For sharing, host the site and its photos together.</p>
+      <button type="submit" class="seal-button form-submit"><span>ADD THIS MEMORY</span><b>✦</b></button>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
 </body>
 </html>
-
